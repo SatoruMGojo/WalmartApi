@@ -40,4 +40,26 @@ public class ProductService {
     return productMapper.mapToDto(product.get());
     }
 
+    public Product updateProduct(Long id, Product product) {
+        // Verificar que el producto existe
+        if (productRepository.findById(id).isEmpty()) {
+            throw new NotFound("Product Not Found");
+        }
+        // Convertir el POJO a entidad y asignarle el id
+        ProductEntity entityToUpdate = productMapper.mapToEntity(product);
+        entityToUpdate.setId(id);
+        // .save() detecta que tiene id y hace UPDATE
+        ProductEntity savedEntity = productRepository.save(entityToUpdate);
+        // Retornar el entity mapeado a POJO
+        return productMapper.mapToDto(savedEntity);
+    }
+
+    public void deleteProduct(Long id) {
+        // Verificar que el producto existe
+        if (productRepository.findById(id).isEmpty()) {
+            throw new NotFound("Product Not Found");
+        }
+        productRepository.deleteById(id);
+    }
+
 }
